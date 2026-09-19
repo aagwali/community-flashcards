@@ -1,0 +1,7 @@
+title: Questions tricky — TypeScript
+description: >-
+  Les questions qui séparent « je connais la syntaxe » de « je comprends le
+  système de types ». Alimenté par nos retours d'entretiens.
+maintainers:
+  - adrien
+order: 2
