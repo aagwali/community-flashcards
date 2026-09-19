@@ -11,6 +11,7 @@ import { useDeck } from '../collection'
 import { useProgress } from '../progress'
 import { Markdown } from '../design-system/markdown'
 import { Button, ButtonLink, EmptyState, Kbd, Meter, TagPill, cx } from '../design-system/primitives'
+import { hasModifier, isTyping } from '../keyboard'
 
 export function ReviewPage() {
   const { deckSlug } = useParams()
@@ -73,6 +74,8 @@ function ReviewSession({ deck }: { deck: Deck }) {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
+      if (isTyping(event.target) || hasModifier(event)) return
+
       if (event.key === ' ' || event.key === 'Enter') {
         event.preventDefault()
         setRevealed(true)
@@ -83,7 +86,10 @@ function ReviewSession({ deck }: { deck: Deck }) {
 
       const position = Number.parseInt(event.key, 10)
       const rating = RATINGS[position - 1]
-      if (rating) submit(rating)
+      if (rating) {
+        event.preventDefault()
+        submit(rating)
+      }
     }
 
     window.addEventListener('keydown', onKeyDown)

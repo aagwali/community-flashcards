@@ -154,7 +154,7 @@ export function Meter({ value, total }: { value: number; total: number }) {
       aria-valuemax={total}
     >
       <div
-        className="h-full rounded-full bg-brand transition-[width] duration-300"
+        className="h-full rounded-full bg-brand-vivid transition-[width] duration-300"
         style={{ width: `${ratio * 100}%` }}
       />
     </div>

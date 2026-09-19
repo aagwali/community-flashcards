@@ -7,6 +7,7 @@ import { CardEditor } from '../components/card-editor'
 import { Markdown } from '../design-system/markdown'
 import { ArrowLeft, ArrowRight, Close, Grid, Pencil, Plus } from '../design-system/icons'
 import { Button, EmptyState, Kbd, StatusBadge, TagPill, cx } from '../design-system/primitives'
+import { hasModifier, isTyping } from '../keyboard'
 
 /**
  * Mode animation — l'écran qu'on projette pendant la session du midi.
@@ -53,8 +54,16 @@ export function AnimatePage() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       // L'éditeur gère ses propres raccourcis ; on ne lui vole pas ses touches.
-      if (editing) return
+      if (editing || isTyping(event.target) || hasModifier(event)) return
 
+      /*
+       * `preventDefault` sur TOUTES les touches traitées, y compris les lettres.
+       *
+       * Sans lui, « E » ouvre l'éditeur — React monte le champ et lui donne le
+       * focus avant que le navigateur n'ait fini de traiter la frappe — puis la
+       * même frappe s'insère dans le champ fraîchement focalisé. Annuler le
+       * comportement par défaut coupe l'insertion à la racine.
+       */
       switch (event.key) {
         case ' ':
         case 'Enter':
@@ -62,25 +71,31 @@ export function AnimatePage() {
           setRevealed((value) => !value)
           break
         case 'ArrowRight':
+          event.preventDefault()
           goTo(index + 1)
           break
         case 'ArrowLeft':
+          event.preventDefault()
           goTo(index - 1)
           break
         case 'Escape':
+          event.preventDefault()
           if (outlineOpen) setOutlineOpen(false)
           else navigate(`/decks/${deckSlug ?? ''}`)
           break
         case 's':
         case 'S':
+          event.preventDefault()
           setOutlineOpen((value) => !value)
           break
         case 'e':
         case 'E':
+          event.preventDefault()
           if (current) setEditing(current)
           break
         case 'n':
         case 'N':
+          event.preventDefault()
           addCard()
           break
         default:
