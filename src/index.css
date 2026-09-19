@@ -3,8 +3,8 @@
 /*
  * Identité — déclinée du logo.
  *
- * Deux couleurs seulement : le vert du coureur (#21a84b) et le pétrole du
- * lettrage (#0a4553).
+ * Deux couleurs seulement, relevées dans le fichier du logo : le vert du
+ * coureur (#16a64c) et le pétrole du lettrage (#004e59).
  *
  * Le vert est un accent, jamais un aplat : il marque la progression, l'action
  * principale et l'état actif. Le pétrole porte le texte en clair et le fond en
@@ -25,17 +25,17 @@
 :root {
   color-scheme: light dark;
 
-  --c-canvas: light-dark(#f7f8f8, #061e26);
-  --c-surface: light-dark(#ffffff, #0b303a);
-  --c-raised: light-dark(#ffffff, #0f3b46);
-  --c-line: light-dark(#e2e8e8, #174a56);
-  --c-line-strong: light-dark(#cdd8d8, #216070);
-  --c-ink: light-dark(#0a4553, #e8f2f2);
-  --c-muted: light-dark(#5b757c, #8caeb6);
-  --c-brand: light-dark(#128a41, #38cc68);
-  --c-brand-vivid: light-dark(#21a84b, #38cc68);
-  --c-brand-ink: light-dark(#ffffff, #04231a);
-  --c-brand-soft: light-dark(#e8f6ec, #0d3a2e);
+  --c-canvas: light-dark(#f7f9f9, #021e25);
+  --c-surface: light-dark(#ffffff, #04323b);
+  --c-raised: light-dark(#ffffff, #073d47);
+  --c-line: light-dark(#e1e8e9, #0d4c58);
+  --c-line-strong: light-dark(#ccd8da, #17626f);
+  --c-ink: light-dark(#004e59, #e6f1f2);
+  --c-muted: light-dark(#577379, #87aab2);
+  --c-brand: light-dark(#0e7a3a, #35c96a);
+  --c-brand-vivid: light-dark(#16a64c, #35c96a);
+  --c-brand-ink: light-dark(#ffffff, #032118);
+  --c-brand-soft: light-dark(#e7f6ec, #0b382c);
   --c-warn: light-dark(#b45309, #f0b755);
   --c-warn-soft: light-dark(#fdf3e3, #3a2c15);
 }

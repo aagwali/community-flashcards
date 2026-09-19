@@ -1,41 +1,37 @@
+import { useState } from 'react'
 import { appConfig } from '../../app-config'
 
 /**
- * Logo officiel, optionnel.
+ * Logo officiel, déposé dans `public/logo.svg`.
  *
- * Déposez le fichier dans `src/assets/logo.svg` (ou `.png`) et il remplace
- * automatiquement la marque dessinée ci-dessous — aucune ligne de code à
- * changer. La résolution se fait au build : tant que le fichier est absent,
- * rien n'est téléchargé et aucune requête ne part.
+ * Il n'est pas importé comme module : Vite recopie `public/` tel quel, ce qui
+ * laisse le fichier remplaçable sans rebuild du code. En contrepartie sa
+ * présence n'est pas vérifiable à la compilation — d'où le repli sur la marque
+ * dessinée si la requête échoue, pour qu'un fork sans logo reste présentable.
  */
-const officialLogo = Object.values(
-  import.meta.glob('/src/assets/logo.{svg,png}', {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  }),
-)[0] as string | undefined
+const LOGO_URL = `${import.meta.env.BASE_URL}logo.svg`
+
+export function Mark({ height = 22 }: { height?: number }) {
+  const [unavailable, setUnavailable] = useState(false)
+
+  if (unavailable) return <FallbackMark size={height + 6} />
+
+  return (
+    <img
+      src={LOGO_URL}
+      alt={appConfig.communityName}
+      style={{ height }}
+      className="w-auto object-contain"
+      onError={() => setUnavailable(true)}
+    />
+  )
+}
 
 /**
- * Marque de repli — une déclinaison, pas une reproduction.
- *
- * Elle reprend les deux couleurs de l'identité et le geste du logo (une forme
- * en mouvement, coupée en diagonale) sans en copier le dessin. Deux cartes
- * superposées dont celle du dessus se retourne : c'est littéralement le produit.
+ * Marque de repli — une déclinaison, pas une reproduction : deux cartes
+ * superposées dont celle du dessus se retourne, dans les couleurs de l'identité.
  */
-export function Mark({ size = 28 }: { size?: number }) {
-  if (officialLogo) {
-    return (
-      <img
-        src={officialLogo}
-        alt={appConfig.communityName}
-        height={size}
-        className="w-auto object-contain"
-        style={{ height: size }}
-      />
-    )
-  }
-
+function FallbackMark({ size }: { size: number }) {
   return (
     <svg
       width={size}
@@ -52,21 +48,16 @@ export function Mark({ size = 28 }: { size?: number }) {
   )
 }
 
+/**
+ * Verrouillage co-marqué : le logo porte l'entreprise, le mot porte le produit.
+ * Le filet les sépare sans les hiérarchiser.
+ */
 export function Logo() {
   return (
-    <span className="inline-flex items-center gap-2.5">
+    <span className="inline-flex items-center gap-3">
       <Mark />
-      {/* Le logo officiel porte déjà le nom : inutile de le répéter à côté. */}
-      {officialLogo ? (
-        <span className="text-[15px] font-semibold tracking-tight text-ink">Cartes</span>
-      ) : (
-        <span className="flex flex-col leading-none">
-          <span className="text-[15px] font-semibold tracking-tight text-ink">Cartes</span>
-          <span className="mt-0.5 text-[11px] font-medium tracking-wide text-muted">
-            {appConfig.communityName}
-          </span>
-        </span>
-      )}
+      <span className="h-6 w-px bg-line-strong" aria-hidden="true" />
+      <span className="text-[15px] font-semibold tracking-tight text-ink">Cartes</span>
     </span>
   )
 }
