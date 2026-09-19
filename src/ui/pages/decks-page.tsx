@@ -18,7 +18,10 @@ export function DecksPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Les cartes de la communauté</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-muted">
           Écrites pendant nos sessions, corrigées et enrichies par tout le monde. Animez un deck pour le
-          présenter, révisez-le pour ne pas l'oublier.
+          présenter, révisez-le pour ne pas l'oublier.{' '}
+          <Link to="/guide" className="text-brand underline underline-offset-3">
+            Première visite ?
+          </Link>
         </p>
       </div>
 

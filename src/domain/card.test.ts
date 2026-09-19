@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Card } from './card'
-import { cardFilePath, matchesSearch, slugify, uniqueSlug } from './card'
+import { cardFilePath, matchesSearch, slugify, suggestedStatusAfterEdit, uniqueSlug } from './card'
 import { parseTag } from './tag'
 
 const card: Card = {
@@ -19,6 +19,30 @@ const card: Card = {
 describe('cardFilePath', () => {
   it('reconstruit le chemin du fichier source', () => {
     expect(cardFilePath(card)).toBe('content/solid/dependency-inversion.md')
+  })
+})
+
+describe('suggestedStatusAfterEdit', () => {
+  const validated: Card = { ...card, status: 'validated' }
+
+  it('fait redescendre une carte validée dont le fond change', () => {
+    expect(suggestedStatusAfterEdit(validated, 'Une autre question ?', validated.answer)).toBe('proposed')
+    expect(suggestedStatusAfterEdit(validated, validated.question, 'Une autre réponse.')).toBe('proposed')
+  })
+
+  it('laisse la carte validée si le fond est identique', () => {
+    expect(suggestedStatusAfterEdit(validated, validated.question, validated.answer)).toBe('validated')
+  })
+
+  it('ignore les espaces de bord, qui ne changent rien au fond', () => {
+    expect(suggestedStatusAfterEdit(validated, `  ${validated.question}  `, `\n${validated.answer}\n`)).toBe(
+      'validated',
+    )
+  })
+
+  it('ne touche pas aux statuts qui ne prétendent rien', () => {
+    expect(suggestedStatusAfterEdit({ ...card, status: 'draft' }, 'autre', 'autre')).toBe('draft')
+    expect(suggestedStatusAfterEdit({ ...card, status: 'proposed' }, 'autre', 'autre')).toBe('proposed')
   })
 })
 

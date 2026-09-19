@@ -104,6 +104,13 @@ _Publication_ ouvre l'éditeur web de GitHub sur le bon fichier. Aucun jeton
 d'accès à distribuer, aucun secret dans une application publique — GitHub gère
 les droits.
 
+**Une carte validée dont le texte change redescend à « à valider ».**
+Le badge « Validée » affirme que le groupe s'est prononcé sur ce texte. Laisser
+quelqu'un réécrire le fond sans toucher au statut ferait mentir le badge. La
+règle est dans le domaine ([`suggestedStatusAfterEdit`](src/domain/card.ts)) et
+reste contestable : l'auteur de la modification peut remettre « Validée » pour
+une coquille.
+
 **La progression de révision est locale et privée.**
 Dans un cadre professionnel, un score de révision visible par l'équipe
 transforme un outil d'apprentissage en outil d'évaluation. Elle n'est ni

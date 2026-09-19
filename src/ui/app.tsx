@@ -9,6 +9,7 @@ import { useTheme } from './theme'
 import { AnimatePage } from './pages/animate-page'
 import { DeckPage } from './pages/deck-page'
 import { DecksPage } from './pages/decks-page'
+import { GuidePage } from './pages/guide-page'
 import { PublishPage } from './pages/publish-page'
 import { ReviewPage } from './pages/review-page'
 
@@ -25,6 +26,7 @@ export function App() {
             <Route path="decks/:deckSlug" element={<DeckPage />} />
             <Route path="decks/:deckSlug/revision" element={<ReviewPage />} />
             <Route path="publication" element={<PublishPage />} />
+            <Route path="guide" element={<GuidePage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
@@ -55,6 +57,7 @@ function Layout() {
                 </span>
               ) : null}
             </NavItem>
+            <NavItem to="/guide">Guide</NavItem>
           </nav>
 
           <div className="ml-auto flex items-center gap-1">

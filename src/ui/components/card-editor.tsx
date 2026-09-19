@@ -1,6 +1,13 @@
 import { useEffect, useId, useMemo, useState } from 'react'
 import type { Card, CardStatus } from '../../domain/card'
-import { CARD_STATUSES, CARD_STATUS_LABELS, slugify, uniqueSlug, cardId } from '../../domain/card'
+import {
+  CARD_STATUSES,
+  CARD_STATUS_LABELS,
+  cardId,
+  slugify,
+  suggestedStatusAfterEdit,
+  uniqueSlug,
+} from '../../domain/card'
 import { formatTag, parseTag } from '../../domain/tag'
 import { useAuthor } from '../author'
 import { useCollection } from '../collection'
@@ -29,11 +36,23 @@ export function CardEditor({ card, onClose, onSaved }: CardEditorProps) {
   const [question, setQuestion] = useState(card.question)
   const [answer, setAnswer] = useState(card.answer)
   const [status, setStatus] = useState<CardStatus>(card.status)
+  const [statusChosen, setStatusChosen] = useState(false)
   const [rawTags, setRawTags] = useState(card.tags.map(formatTag).join(' '))
   const [note, setNote] = useState(drafts[card.id]?.note ?? '')
 
   const draft = drafts[card.id]
   const isNew = draft?.origin === 'created'
+
+  /*
+   * La suggestion se compare à la version **publiée**, pas au brouillon local :
+   * sinon, dès la première frappe la référence se déplacerait et la carte
+   * paraîtrait inchangée.
+   */
+  const published = publishedCard(card.id)
+  const reference = published ?? card
+  const suggestedStatus = suggestedStatusAfterEdit(reference, question, answer)
+  const effectiveStatus = statusChosen ? status : suggestedStatus
+  const wasDowngraded = !statusChosen && reference.status === 'validated' && suggestedStatus !== 'validated'
 
   const tagParsing = useMemo(() => {
     const tokens = rawTags.split(/[\s,]+/).filter((token) => token.length > 0)
@@ -79,7 +98,7 @@ export function CardEditor({ card, onClose, onSaved }: CardEditorProps) {
       slug,
       question: question.trim(),
       answer: answer.trim(),
-      status,
+      status: effectiveStatus,
       tags: tagParsing.valid,
       ...(author.length > 0 ? { author: card.author ?? author } : {}),
     }
@@ -167,8 +186,11 @@ export function CardEditor({ card, onClose, onSaved }: CardEditorProps) {
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label="Statut" hint="où en est la validation par le groupe">
                 <select
-                  value={status}
-                  onChange={(event) => setStatus(event.target.value as CardStatus)}
+                  value={effectiveStatus}
+                  onChange={(event) => {
+                    setStatusChosen(true)
+                    setStatus(event.target.value as CardStatus)
+                  }}
                   className={inputClass}
                 >
                   {CARD_STATUSES.map((candidate) => (
@@ -177,6 +199,12 @@ export function CardEditor({ card, onClose, onSaved }: CardEditorProps) {
                     </option>
                   ))}
                 </select>
+                {wasDowngraded ? (
+                  <p className="mt-1.5 text-[12px] text-muted">
+                    Cette carte était validée par le groupe ; son texte ayant changé, elle repasse à « À
+                    valider ». Remettez « Validée » s'il s'agit d'une simple coquille.
+                  </p>
+                ) : null}
               </Field>
 
               <Field label="Votre pseudo GitHub" hint="pour créditer la contribution">

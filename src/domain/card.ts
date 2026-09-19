@@ -49,6 +49,24 @@ export function hasTag(card: Card, tag: Tag): boolean {
 }
 
 /**
+ * Statut suggéré après une modification du fond.
+ *
+ * « Validée » veut dire « le groupe s'est prononcé sur ce texte ». Dès que le
+ * texte change, l'affirmation n'est plus vraie : la carte redescend d'elle-même
+ * à « À valider ».
+ *
+ * C'est une suggestion, pas un verrou — corriger une coquille ne mérite pas de
+ * repasser devant le groupe, et l'auteur de la modification peut remettre
+ * « Validée » en connaissance de cause.
+ */
+export function suggestedStatusAfterEdit(card: Card, question: string, answer: string): CardStatus {
+  if (card.status !== 'validated') return card.status
+
+  const unchanged = question.trim() === card.question.trim() && answer.trim() === card.answer.trim()
+  return unchanged ? 'validated' : 'proposed'
+}
+
+/**
  * Recherche plein texte volontairement naïve : sur quelques centaines de cartes,
  * un `includes` insensible aux accents bat n'importe quel index à maintenir.
  */
