@@ -51,13 +51,16 @@ function FallbackMark({ size }: { size: number }) {
 /**
  * Verrouillage co-marqué : le logo porte l'entreprise, le mot porte le produit.
  * Le filet les sépare sans les hiérarchiser.
+ *
+ * Sur mobile, le nom du produit s'efface : la barre doit loger la navigation,
+ * et le logo suffit à dire où l'on est.
  */
 export function Logo() {
   return (
     <span className="inline-flex items-center gap-3">
       <Mark />
-      <span className="h-6 w-px bg-line-strong" aria-hidden="true" />
-      <span className="text-[15px] font-semibold tracking-tight text-ink">Cartes</span>
+      <span className="hidden h-6 w-px bg-line-strong sm:block" aria-hidden="true" />
+      <span className="hidden text-[15px] font-semibold tracking-tight text-ink sm:block">Cartes</span>
     </span>
   )
 }

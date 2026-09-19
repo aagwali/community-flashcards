@@ -4,7 +4,7 @@ import { CollectionProvider, useCollection } from './collection'
 import { ProgressProvider } from './progress'
 import { Logo } from './design-system/logo'
 import { Github, Moon, Sun } from './design-system/icons'
-import { Button, ButtonLink, cx } from './design-system/primitives'
+import { ButtonLink, cx } from './design-system/primitives'
 import { useTheme } from './theme'
 import { AnimatePage } from './pages/animate-page'
 import { DeckPage } from './pages/deck-page'
@@ -42,12 +42,17 @@ function Layout() {
   return (
     <div className="min-h-dvh">
       <header className="sticky top-0 z-30 border-b border-line bg-canvas/85 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-5xl items-center gap-6 px-4 sm:px-6">
+        <div className="mx-auto flex h-16 max-w-5xl items-center gap-3 px-4 sm:gap-6 sm:px-6">
           <Link to="/" className="shrink-0">
             <Logo />
           </Link>
 
-          <nav className="flex items-center gap-1 text-sm">
+          {/*
+            La navigation absorbe l'espace restant et défile en son sein plutôt
+            que d'élargir la page : quelle que soit la longueur des libellés,
+            le document ne peut pas se mettre à défiler horizontalement.
+          */}
+          <nav className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto text-[13px] [scrollbar-width:none] sm:gap-1 sm:text-sm [&::-webkit-scrollbar]:hidden">
             <NavItem to="/">Decks</NavItem>
             <NavItem to="/publication">
               Publication
@@ -60,21 +65,22 @@ function Layout() {
             <NavItem to="/guide">Guide</NavItem>
           </nav>
 
-          <div className="ml-auto flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+            <button
+              type="button"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className={iconActionClass}
               aria-label="Changer de thème"
               title="Changer de thème"
             >
               {theme === 'dark' ? <Sun /> : <Moon />}
-            </Button>
+            </button>
+            {/* Replié sur mobile : le dépôt reste accessible depuis le Guide et la Publication. */}
             <a
               href={repositoryUrl()}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-ink"
+              className={cx(iconActionClass, 'hidden sm:inline-flex')}
               aria-label="Le dépôt sur GitHub"
               title="Le dépôt sur GitHub"
             >
@@ -97,6 +103,10 @@ function Layout() {
   )
 }
 
+/** Les actions iconiques de l'en-tête partagent la même boîte de 32 px. */
+const iconActionClass =
+  'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-ink'
+
 function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <NavLink
@@ -104,7 +114,7 @@ function NavItem({ to, children }: { to: string; children: React.ReactNode }) {
       end={to === '/'}
       className={({ isActive }) =>
         cx(
-          'inline-flex h-8 items-center rounded-lg px-3 font-medium transition-colors',
+          'inline-flex h-8 shrink-0 items-center rounded-lg px-2.5 font-medium transition-colors sm:px-3',
           isActive ? 'bg-surface text-ink' : 'text-muted hover:text-ink',
         )
       }

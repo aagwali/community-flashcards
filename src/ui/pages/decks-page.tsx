@@ -4,7 +4,7 @@ import { systemClock } from '../../application/ports'
 import { countByStatus } from '../../domain/deck'
 import { useCollection } from '../collection'
 import { useProgress } from '../progress'
-import { Layers, Play } from '../design-system/icons'
+import { ArrowRight, Layers, Play } from '../design-system/icons'
 import { ButtonLink, Meter } from '../design-system/primitives'
 
 export function DecksPage() {
@@ -18,11 +18,16 @@ export function DecksPage() {
         <h1 className="text-2xl font-semibold tracking-tight">Les cartes de la communauté</h1>
         <p className="mt-2 text-[15px] leading-relaxed text-muted">
           Écrites pendant nos sessions, corrigées et enrichies par tout le monde. Animez un deck pour le
-          présenter, révisez-le pour ne pas l'oublier.{' '}
-          <Link to="/guide" className="text-brand underline underline-offset-3">
-            Première visite ?
-          </Link>
+          présenter, révisez-le pour ne pas l'oublier.
         </p>
+
+        <Link
+          to="/guide"
+          className="group mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand"
+        >
+          Première visite ? Comment ça marche
+          <ArrowRight className="transition-transform duration-150 group-hover:translate-x-0.5" />
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
